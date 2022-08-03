@@ -1,18 +1,13 @@
 const addBtn = document.getElementById('add');
 addBtn.addEventListener('click', addPerson);
 
-function addPersomn() {
+function addPerson() {
     console.log('Creazione di una persona');
     axios
       .get('https://randomuser.me/api')
-      .then(function (results) {
-        console.log(results);
-        const imgUrl = results.picture.medium;
-        const title = results.name.title;
-        const name = results.name.first;
-        const surname = results.name.last;
-        createNomeCompleto(title, name, surname);
-        createImg(imgUrl);
+      .then(function (response) {
+        console.log(response);
+        createImg(response.data.results[0]);
       })
       .catch(function (error) {
         // handle error
@@ -20,16 +15,21 @@ function addPersomn() {
       });
   }
 
-  function createImg(url) {
+  function createImg(user) {
     let image = document.createElement('img'); // <img>
-    image.src = url;
+    image.src = user.picture.medium;
     image.className = 'img-fluid';
     let div = document.createElement('div');
-    div.className = 'col-4';
+    div.className = 'col-4 text-center';
     div.appendChild(image);
+
+    let divUser = document.createElement('div');
+    divUser.innerHTML = createNomeCompleto(user);
+    div.appendChild(divUser);
+
     document.getElementById('gallery').appendChild(div);
   }
 
-  function createNomeCompleto(title, name, surname){
-    
+  function createNomeCompleto(user){
+    return user.name.title + " " + user.name.first + " " + user.name.last; 
   }
